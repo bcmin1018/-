@@ -19,6 +19,10 @@ class mysql_connect:
             "mysql+mysqldb://" + cf.db_id + ":" + cf.db_passwd + "@" + cf.db_ip + ":" + cf.db_port + "/ipo",
             encoding='utf-8')
 
+        # self.db_engine_ipo_list = create_engine(
+        #     "mysql+mysqldb://" + cf.db_id + ":" + cf.db_passwd + "@" + cf.db_ip + ":" + cf.db_port + "/ipo",
+        #     encoding='utf-8')
+
     def create_database(self):
         # if self.chk_database_exist() == False:
         sql = 'CREATE DATABASE %s'
@@ -64,6 +68,12 @@ class mysql_connect:
         self.db_conn.cursor().execute(sql % (self.db_name, table_name))
         self.db_conn.commit()
         print("테이블 생성 완료하였습니다.")
+
+    def data_insert(self, table_name, val):
+        sql = "insert into {} values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
+        if table_name == "ipo_list":
+            self.db_engine.execute(sql,val)
+        print("{} 데이터 입력 완료하였습니다.".format(table_name))
 
     def table_setting(self):
         print("self.simul_reset" + str(self.simul_reset))
