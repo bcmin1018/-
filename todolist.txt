@@ -1,5 +1,10 @@
 # to do list
 # 변경된 value 찾아 insert
+'공모청약일','상장일', '확정 공모가' hash 화하여 컬럼 생성
+중복된 종목코드 중 hash 값 비교하여 변하면 최신 일자로 update
+중복되지 않은 종목코드는 insert
+종목 코드 별 데이터를 해시값 생성, 없는 코드면 insert, 있는 코드면 update dict로 구현
+# timestamp 찍기
 # get_info 수정
 # get_info 쓰레드 처리
 # 종목코드 비교하여 없으면 update

@@ -1,11 +1,14 @@
+from multiprocessing import Pool
 import requests
+import time
 import datetime
+import threading
+
 from bs4 import BeautifulSoup
 
-
-class get_all_info:
+class GET_ALL_INFO:
     def __init__(self):
-        self.url = self.get_url()
+        self.url_list = self.get_url()
 
     # 종목 URL 가져오기
     def get_url(self):
@@ -13,18 +16,37 @@ class get_all_info:
         r = requests.get(url).text
         soup = BeautifulSoup(r, 'html.parser')
         href = soup.find('table', {'summary': '공모주 청약일정'}).find_all('a', href=True)
-
         href_list = []
         for i in href:
             if 'index' not in i['href']:
                 href_list.append('http://www.38.co.kr' + i['href'])
-
         return href_list
 
-    def parsing(self, url):
+    def crawl_info(self, url):
         r = requests.get(url).text
         soup = BeautifulSoup(r, 'html.parser')
-        return soup
+        code = self.get_code(soup)
+        name = self.get_name(soup)
+        sector = self.get_sector(soup)
+        days = self.get_days(soup)
+        debut = self.get_debut_days(soup)
+        price = self.get_ipo_price(soup)
+        capital = self.get_capital(soup)
+        profit = self.get_profit(soup)
+        company = self.get_ipo_company(soup)
+        limit = self.get_limit(soup)
+        info = [code, name, sector, days, debut, price, capital, profit, company, limit]
+        return info
+
+    def multi_process(self, func, list):
+        start_time = time.time()
+        pool = Pool(processes=2)
+        info_list = pool.map(func, list)
+        pool.close()
+        pool.join()
+        print("크롤링 종료")
+        print("크롤링 소요 시간", time.time() - start_time)
+        return info_list
 
     #종목코드 가져오기
     def get_code(self, soup):
