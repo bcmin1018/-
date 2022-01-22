@@ -1,5 +1,5 @@
-from library.get_info import get_all_info
+from library.db import *
 
-a = get_all_info()
-b = a.get_name
-print(b)
+mysql = MYSQL_CONNECT('ipo')
+mysql.create_table('ipo_list')
+mysql.data_insert('ipo_list', result)

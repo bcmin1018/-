@@ -4,7 +4,7 @@ import pymysql
 import datetime
 pymysql.install_as_MySQLdb()
 
-class mysql_connect:
+class MYSQL_CONNECT:
     def __init__(self, db_name):
         self.db_name = db_name
         self.db_conn = pymysql.connect(host=cf.db_ip,
@@ -63,17 +63,18 @@ class mysql_connect:
             capital varchar(255), 
             profit varchar(255), 
             company varchar(255), 
-            limit_ varchar(255)
+            limit_ varchar(255),
+            time varchar(255)
             )'''
         self.db_conn.cursor().execute(sql % (self.db_name, table_name))
         self.db_conn.commit()
         print("테이블 생성 완료하였습니다.")
 
     def data_insert(self, table_name, val):
-        sql = "insert into {} values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
+        sql = "insert into {} values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
         if table_name == "ipo_list":
-            self.db_engine.execute(sql,val)
-        print("{} 데이터 입력 완료하였습니다.".format(table_name))
+            self.db_engine.execute(sql, val)
+            print("{} 데이터 입력 완료하였습니다.".format(table_name))
 
     def table_setting(self):
         print("self.simul_reset" + str(self.simul_reset))
