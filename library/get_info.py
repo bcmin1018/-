@@ -21,9 +21,13 @@ class GET_ALL_INFO:
                 href_list.append('http://www.38.co.kr' + i['href'])
         return href_list
 
-    def crawl_info(self, url):
+    def parse_html(self, url):
         r = requests.get(url).text
         soup = BeautifulSoup(r, 'html.parser')
+        return soup
+
+    def all_crawl(self, url):
+        soup = self.parse_html(url)
         code = self.get_code(soup)
         name = self.get_name(soup)
         sector = self.get_sector(soup)
@@ -35,21 +39,21 @@ class GET_ALL_INFO:
         company = self.get_ipo_company(soup)
         limit = self.get_limit(soup)
         time = self.today_detail
-        # info_dict = {
-        #     'code': code,
-        #     'name': name,
-        #     'sector': sector,
-        #     'days': days,
-        #     'debut': debut,
-        #     'price': price,
-        #     'capital': capital,
-        #     'profit': profit,
-        #     'company': company,
-        #     'limit': limit,
-            # 'time': time
-        # }
-        info = [code, name, sector, days, debut, price, capital, profit, company, limit, time]
-        return info
+        info_dict = {
+            'code': code,
+            'name': name,
+            'sector': sector,
+            'days': days,
+            'debut': debut,
+            'price': price,
+            'capital': capital,
+            'profit': profit,
+            'company': company,
+            'limit': limit,
+            'time': time
+        }
+        # info = [code, name, sector, days, debut, price, capital, profit, company, limit, time]
+        return info_dict
 
     def multi_process(self, func, list):
         start_time = time.time()

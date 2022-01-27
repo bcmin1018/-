@@ -76,27 +76,50 @@ class MYSQL_CONNECT:
             self.db_engine.execute(sql, val)
             print("{} 데이터 입력 완료하였습니다.".format(table_name))
 
-    def table_setting(self):
-        print("self.simul_reset" + str(self.simul_reset))
-        # 시뮬레이터를 초기화 하고 처음부터 구축하기 위한 로직
-        if self.simul_reset:
-            print("table reset setting !!! ")
-            self.init_database()
-        # 시뮬레이터를 초기화 하지 않고 마지막으로 끝난 시점 부터 구동하기 위한 로직
-        else:
-            # self.simul_reset 이 False이고, 시뮬레이터 데이터베이스와, all_item_db 테이블, jango_table이 존재하는 경우 이어서 시뮬레이터 시작
-            if self.is_simul_database_exist() and self.is_simul_table_exist(self.db_name,
-                                                                            "all_item_db") and self.is_simul_table_exist(
-                self.db_name, "jango_data"):
-                self.init_df_jango()
-                self.init_df_all_item()
-                # 마지막으로 구동했던 시뮬레이터의 날짜를 가져온다.
-                self.last_simul_date = self.get_jango_data_last_date()
-                print("self.last_simul_date: " + str(self.last_simul_date))
-            #    초반에 reset 으로 돌다가 멈춰버린 경우 다시 init 해줘야함
-            else:
-                print("초반에 reset 으로 돌다가 멈춰버린 경우 다시 init 해줘야함 ! ")
-                self.init_database()
-                self.simul_reset = True
+    def data_update(self, table_name, val):
+        sql = "update {} set values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
+        if table_name == "ipo_list":
+            self.db_engine.execute(sql, val)
+            print("{} 데이터 입력 완료하였습니다.".format(table_name))
+
+    def data_select(self, table, col):
+        code_list = []
+        sql = "select %s from %s"
+        code_temp = self.db_engine.execute(sql % (col, table)).fetchall()
+        for idx in range(0, len(code_temp)):
+            code = code_temp[idx][0]
+            code_list.append(code)
+        return code_list
+
+    def key_compare(self, old_code, new_code):
+        update = [o_code for o_code in old_code if o_code in new_code]
+        insert = [n_code for n_code in new_code if n_code not in old_code]
+        return update, insert
+
+
+
+
+    # def table_setting(self):
+    #     print("self.simul_reset" + str(self.simul_reset))
+    #     # 시뮬레이터를 초기화 하고 처음부터 구축하기 위한 로직
+    #     if self.simul_reset:
+    #         print("table reset setting !!! ")
+    #         self.init_database()
+    #     # 시뮬레이터를 초기화 하지 않고 마지막으로 끝난 시점 부터 구동하기 위한 로직
+    #     else:
+    #         # self.simul_reset 이 False이고, 시뮬레이터 데이터베이스와, all_item_db 테이블, jango_table이 존재하는 경우 이어서 시뮬레이터 시작
+    #         if self.is_simul_database_exist() and self.is_simul_table_exist(self.db_name,
+    #                                                                         "all_item_db") and self.is_simul_table_exist(
+    #             self.db_name, "jango_data"):
+    #             self.init_df_jango()
+    #             self.init_df_all_item()
+    #             # 마지막으로 구동했던 시뮬레이터의 날짜를 가져온다.
+    #             self.last_simul_date = self.get_jango_data_last_date()
+    #             print("self.last_simul_date: " + str(self.last_simul_date))
+    #         #    초반에 reset 으로 돌다가 멈춰버린 경우 다시 init 해줘야함
+    #         else:
+    #             print("초반에 reset 으로 돌다가 멈춰버린 경우 다시 init 해줘야함 ! ")
+    #             self.init_database()
+    #             self.simul_reset = True
 
 
