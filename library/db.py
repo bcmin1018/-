@@ -2,7 +2,9 @@ from library import cf
 from sqlalchemy import create_engine
 import pymysql
 import datetime
+
 pymysql.install_as_MySQLdb()
+
 
 class MYSQL_CONNECT:
     def __init__(self, db_name):
@@ -76,28 +78,35 @@ class MYSQL_CONNECT:
             self.db_engine.execute(sql, val)
             print("{} 데이터 입력 완료하였습니다.".format(table_name))
 
-    def data_update(self, table_name, val):
-        sql = "update {} set values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(table_name)
+    def data_update(self, table_name, code, val):
+        sql = "update {} set item_name = %s, sector = %s, " \
+              "ipo_days = %s, debut_days = %s, ipo_price =%s, capital = %s, " \
+              "profit = %s, company = %s, limit_ = %s, time = %s " \
+              "where code = {}".format(table_name, code)
+        print(sql)
         if table_name == "ipo_list":
             self.db_engine.execute(sql, val)
-            print("{} 데이터 입력 완료하였습니다.".format(table_name))
+        print("{} 데이터 업데이트를 완료하였습니다.".format(table_name))
 
-    def data_select(self, table, col):
-        code_list = []
-        sql = "select %s from %s"
-        code_temp = self.db_engine.execute(sql % (col, table)).fetchall()
-        for idx in range(0, len(code_temp)):
-            code = code_temp[idx][0]
-            code_list.append(code)
-        return code_list
+    def data_select(self, table, col='code', option=None):
+        if option != 'all':
+            col_list = []
+            sql = "select %s from %s"
+            col_temp = self.db_engine.execute(sql % (col, table)).fetchall()
+            for idx in range(0, len(col_temp)):
+                code = col_temp[idx][0]
+                col_list.append(code)
+            return col_list
+        else:
+            sql = 'select * from %s order by ipo_days desc'
+            result = self.db_engine.execute(sql % (table)).fetchall()
+
+            return result
 
     def key_compare(self, old_code, new_code):
         update = [o_code for o_code in old_code if o_code in new_code]
         insert = [n_code for n_code in new_code if n_code not in old_code]
         return update, insert
-
-
-
 
     # def table_setting(self):
     #     print("self.simul_reset" + str(self.simul_reset))
@@ -121,5 +130,3 @@ class MYSQL_CONNECT:
     #             print("초반에 reset 으로 돌다가 멈춰버린 경우 다시 init 해줘야함 ! ")
     #             self.init_database()
     #             self.simul_reset = True
-
-

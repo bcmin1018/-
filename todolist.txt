@@ -4,8 +4,5 @@
 중복된 종목코드 중 hash 값 비교하여 변하면 최신 일자로 update
 중복되지 않은 종목코드는 insert
 종목 코드 별 데이터를 해시값 생성, 없는 코드면 insert, 있는 코드면 update dict로 구현
-# DB조회하여 시트에 뿌리기
-# DB 키값 없으면 insert 있으면 update
-# get_info 수정
-# 종목코드 비교하여 없으면 update
-# url 가져오기
+
+#spreadsheet 수정
